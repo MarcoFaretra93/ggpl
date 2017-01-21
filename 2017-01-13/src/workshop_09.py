@@ -110,19 +110,4 @@ def buildRoof(verts, angle, height):
 	roofPitch = STRUCT(roofPitch)
 
 	return STRUCT([TEXTURE("texture/surface.jpg")(terrace), base, roofPitch])
-	
-#roof vertices
-v1 = [0,0]
-v2 = [7,0]
-v3 = [7,5]
-v4 = [6,5]
-v5 = [7,7]
-v6 = [3,8]
-v7 = [0,7]
-
-height = 1
-
-angle = PI/3.
-
-#VIEW(buildRoof([v1,v2,v3,v4,v5,v6,v7], angle, height))
 

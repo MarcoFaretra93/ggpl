@@ -24,13 +24,13 @@ def generate_steps(stepNumber, tread, riser, stepWidth):
 
 def ggpl_single_stair(dx, dy, dz):
 	"""
-	ggpl_quarter_turn_stairs is a function, that generate a Quarter Turn Stairs, this function given a dx represent the X value of the box 
+	ggpl_quarter_turn_stairs is a function, that generate a Single Stairs, this function given a dx represent the X value of the box 
 	that contain the stairs, dy represent the Y value of the box, and at the end dz that represent the Z value of the box.
 	Return a HPC Model.
 	@param dx: Number, represent the X value of the box.
 	@param dy: Number, represent the Y value of the box.
 	@param dz: Number, represent the Z value of the box.
-	@return quarterTurnStairs: HPC Model of the space frame.
+	@return singleStairs: HPC Model of the space frame.
 	"""
 	riser = dz/20.
 	stepNumber = 20
@@ -44,7 +44,7 @@ def ggpl_single_stair(dx, dy, dz):
 
 	stairs = generate_steps(stepNumber, firstTread, riser, stepWidth)
 
-	quarterTurnStairs = MAP([S1,S3,S2])(STRUCT(stairs))
-	quarterTurnStairs = COLOR(Color4f([193/255., 154/255., 107/255., 1]))(quarterTurnStairs)
+	singleStairs = MAP([S1,S3,S2])(STRUCT(stairs))
+	singleStairs = COLOR(Color4f([193/255., 154/255., 107/255., 1]))(singleStairs)
 
-	return quarterTurnStairs
+	return singleStairs

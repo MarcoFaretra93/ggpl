@@ -27,20 +27,52 @@ occurencyDoor = [[True, True, True, True, True, True, True, True, True, True, Tr
 				[True, False, False, False, False, False, True, False, False, False, False, False, True],
 				[True, True, True, True, True, True, True, True, True, True, True, True, True]]
 
-listExternalWalls = build_floor.create_walls('muri_esterni_1.lines')
+listExternalWalls = build_floor.create_walls('first_model_muri_esterni_1.lines')
 externalWalls = STRUCT(listExternalWalls)
 xfactor = 15/SIZE([1])(externalWalls)[0]
 yfactor = 15.1/SIZE([2])(externalWalls)[0]
 zfactor = xfactor
 
-def multistorey_house(nFloors):
+listExternalWalls2 = build_floor.create_walls('second_model_muri_esterni_1.lines')
+externalWalls2 = STRUCT(listExternalWalls2)
+xfactor2 = 15/SIZE([1])(externalWalls2)[0]
+yfactor2 = 15.1/SIZE([2])(externalWalls2)[0]
+zfactor2 = xfactor2
 
+def multistorey_house(nFloors, baseString, xfactor, yfactor, zfactor):
+	"""
+	multistorey_house is a function that return the function that calculate the HPC Model represent the house.
+	@param nFloor: represent the number of floors.
+	@param baseString: String represent the prefix of the .lines files.
+	@param xfactor: Float represent the factor to scale and calculate height.
+	@param yfactor: Float represent the factor to scale and calculate height.
+	@param zfactor: Float represent the factor to scale and calculate height.
+	@return renderWindows: Function that calculate the HPC Model.
+	"""
 	def renderWindows(XWindow, YWindow, occurrencyWindow):
-
+		"""
+		renderWindows is a function that return the function that calculate the HPC Model represent the house.
+		@param XWindow: Float list of asix X of the window cells
+		@param YWindow: Float list of asix Y of the window cells
+		@param occurrencyWindow: Bool matrix that represent the full cell and empty cell.
+		@return renderDoors: Function that calculate the HPC Model.
+		"""
 		def renderDoors(XDoor, YDoor, occurencyDoor):
 			"""
+			renderDoors is a function that return the function that calculate the HPC Model represent the house.
+			@param XDoor: Float list of asix X of the door cells.
+			@param YDoor: Float list of asix Y of the door cells.
+			@param occurencyDoor: Bool matrix that represent the full cells and empty cells.
+			@return renderFloor: Function that calculate the HPC Model.
 			"""
 			def renderFloor(verts, angle, height):
+				"""
+				renderFloor is a function that return the HPC Model represent the house.
+				@param verts: list of list of integer represent the verts that define the shape of roof bottom.
+				@param angle: integer represent the angle used to rotate the planes.
+				@param height: integer represent the height of the roof.
+				@return house: HPC Model represent the house.
+				"""
 				all_floor = []
 				#building roof model
 				with open(verts) as file:
@@ -54,7 +86,7 @@ def multistorey_house(nFloors):
 					roofModel = T([1,2])([-SIZE([1])(roofModel)[0]*0.05, -SIZE([2])(roofModel)[0]*0.05])(roofModel)
 
 				for i in range(nFloors):
-					floor_lines = ['muri_esterni_'+str(i+1)+'.lines', 'muri_interni_'+str(i+1)+'.lines', 'porte_'+str(i+1)+'.lines', 'finestre_'+str(i+1)+'.lines', 'scale_'+str(i+1)+'.lines']
+					floor_lines = [baseString + '_muri_esterni_'+str(i+1)+'.lines', baseString + '_muri_interni_'+str(i+1)+'.lines', baseString + '_porte_'+str(i+1)+'.lines', baseString + '_finestre_'+str(i+1)+'.lines', baseString + '_scale_'+str(i)+'.lines', baseString + '_scale_'+str(i+1)+'.lines']
 					floor = build_floor.ggpl_building_house(floor_lines, 
 						windowsDoors.window_main(XWindow,YWindow,occurrencyWindow), 
 						windowsDoors.door_main(YDoor, XDoor, occurencyDoor), 
@@ -67,4 +99,11 @@ def multistorey_house(nFloors):
 		return renderDoors
 	return renderWindows
 
-VIEW(multistorey_house(2)(XWindow, YWindow, occurrencyWindow)(XDoor, YDoor, occurencyDoor)('muri_esterni_1.lines', PI/5., 3/zfactor))
+VIEW(multistorey_house(2, 'first_model', xfactor, yfactor, zfactor)(XWindow, YWindow, occurrencyWindow)(XDoor, YDoor, occurencyDoor)('first_model_muri_esterni_1.lines', PI/5., 3/zfactor))
+VIEW(multistorey_house(2, 'second_model', xfactor2, yfactor2, zfactor2)(XWindow, YWindow, occurrencyWindow)(XDoor, YDoor, occurencyDoor)('second_model_muri_esterni_1.lines', PI/5., 3/zfactor2))
+
+
+
+
+
+

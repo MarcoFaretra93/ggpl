@@ -3,6 +3,11 @@ import csv
 
 def build_ladder(fileLadder, xfactor, ladderBuilder):
 	"""
+	build_ladder is a function that generate a HPC Model represent the ladder of the storey.
+	@param fileLadder: String represent the name of the file to read.
+	@param xfactor: Float represent a value for calculate the height of the ladder.
+	@param ladderBuilder: Module for invoke the function that build a ladder.
+	@return ladder: HPC Model represent the ladder.
 	"""
 	with open(fileLadder, "rb") as file:
 		reader = csv.reader(file, delimiter=",")
@@ -29,10 +34,20 @@ def build_ladder(fileLadder, xfactor, ladderBuilder):
 			ladderY = -ladderY
 		ladder = ladderBuilder.ggpl_single_stair(ladderX, ladderY, 3/xfactor)
 		ladder = T([1,2])([minX, minY])(ladder)
+		print fileLadder
 		return ladder
 
 def build_concrete_objects(fileOpen, offset, xfactor, type, externalWalls, windowsFunction, doorsFunction): 
 	"""
+	build_concrete_objects is a function that generate a list of HPC Models, that represent the windows or the doors.
+	@param fileOpen: String represent the name of the file to read.
+	@param offset: Integer represent the offset of the external walls or internal walls.
+	@param xfactor: Float represent a value for calculate the height of the window or the door.
+	@param type: String that define if the object is a door or window.
+	@param externalWalls: HPC Model represent the external walls, for calculate the translation of the asix z.
+	@param windowsFunction: Function that generate a HPC Model represent the window.
+	@param doorsFunction: Function that generate a HPC Model represent the door.
+	@return concreteList: List that contain a HPC Models of windows or doors, based on type.
 	"""
 	with open(fileOpen, "rb") as file:
 		reader = csv.reader(file, delimiter=",")
@@ -61,6 +76,9 @@ def build_concrete_objects(fileOpen, offset, xfactor, type, externalWalls, windo
 
 def create_walls(fileOpen):
 	"""
+	create_walls is a function that generate a line of the walls.
+	@param fileOpen: String represent the name of the file to read.
+	@return listWalls: List that contain a line of the internal walls or external walls.
 	"""
 	with open(fileOpen, "rb") as file:
 		reader = csv.reader(file, delimiter=",")
@@ -71,9 +89,16 @@ def create_walls(fileOpen):
 
 def ggpl_building_house(lines, windowsFunction, doorsFunction, ladderBuilder, floorNumber, totalNumberOfFloors):
 	"""
-	ggpl_building_house is a function that generate the HPC Model represent the house structure by the input file in .lines files.
-	@return house_building: HPC Model represent the structure.
+	ggpl_building_house is a function that generate the HPC Model represent the n storey structure.
+	@param lines: List of string, that contain the name of the files to read.
+	@param windowsFunction: Function that generate a HPC Model represent the window.
+	@param doorsFunction: Function that generate a HPC Model represent the door.
+	@param ladderBuilder: Module for invoke the function that build a ladder.
+	@param floorNumber: Integer represent the number of the current floor.
+	@param totalNumberOfFloors: Integer represent the number of the total floor.
+	@return house_building: HPC Model represent the storey structure.
 	"""
+	
 	#create external walls 
 	listExternalWalls = create_walls(lines[0])
 	externalWalls = STRUCT(listExternalWalls)
@@ -149,7 +174,7 @@ def ggpl_building_house(lines, windowsFunction, doorsFunction, ladderBuilder, fl
 				#remove a bit for asix X
 				windowList.append(POLYLINE([[float(row[0])-1, float(row[1])],[float(row[2])-1, float(row[3])]]))
 			else:
-				windowList.append(POLYLINE([[float(row[0]), float(row[1])],[float(row[2]), float(row[3])]]))
+				windowList.append(POLYLINE([[float(row[0]), float(row[1])-1],[float(row[2]), float(row[3])-1]]))
 	windows = STRUCT(windowList)
 	windows = OFFSET([14, 14])(windows)
 	windows = PROD([windows, Q(SIZE([3])(externalWalls)[0]/2.)])
@@ -167,7 +192,7 @@ def ggpl_building_house(lines, windowsFunction, doorsFunction, ladderBuilder, fl
 
 	#insert the ladder
 	if(floorNumber != totalNumberOfFloors):
-		ladder = build_ladder(lines[4], xfactor, ladderBuilder)
+		ladder = build_ladder(lines[5], xfactor, ladderBuilder)
 		frame = STRUCT([frame, windowsConcreteList, doorsConcreteList, ladder])
 	else:
 		frame = STRUCT([frame, windowsConcreteList, doorsConcreteList])
