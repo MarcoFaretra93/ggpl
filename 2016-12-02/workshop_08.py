@@ -1,12 +1,12 @@
 from pyplasm import *
 import csv
 
-def ggpl_building_house():
+def ggpl_building_house(lines):
 	"""
 	ggpl_building_house is a function that generate the HPC Model represent the house structure by the input file in .lines files.
 	@return house_building: HPC Model represent the structure.
 	"""
-	with open("muri_esterni.lines", "rb") as file:
+	with open(lines[0], "rb") as file:
 		reader = csv.reader(file, delimiter=",")
 		listExternalWalls = []
 		for row in reader:
@@ -18,7 +18,7 @@ def ggpl_building_house():
 	externalWalls = OFFSET([12,12])(externalWalls)
 	externalWalls = PROD([externalWalls, Q(3/xfactor)])
 
-	with open("muri_interni.lines", "rb") as file:
+	with open(lines[1], "rb") as file:
 		reader = csv.reader(file, delimiter=",")
 		listInternalWalls = []
 		for row in reader:
@@ -29,7 +29,7 @@ def ggpl_building_house():
 
 	internalWalls = PROD([internalWalls, Q(3/xfactor)])
 
-	with open("porte.lines", "rb") as file:
+	with open(lines[2], "rb") as file:
 		reader = csv.reader(file, delimiter=",")
 		doorsList = []
 		cuboid = []
@@ -44,7 +44,7 @@ def ggpl_building_house():
 	doors = STRUCT(doorsList)
 	doors = PROD([doors, Q(2.5/xfactor)])
 
-	with open("finestre.lines", "rb") as file:
+	with open(lines[3], "rb") as file:
 		reader = csv.reader(file, delimiter=",")
 		windowList = []
 		cuboid = []
@@ -70,4 +70,4 @@ def ggpl_building_house():
 
 	return STRUCT([floor, frame])
 
-VIEW(ggpl_building_house())
+#VIEW(ggpl_building_house(['muri_esterni.lines', 'muri_interni.lines', 'porte.lines', 'finestre.lines']))
